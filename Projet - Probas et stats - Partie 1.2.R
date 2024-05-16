@@ -17,8 +17,8 @@ gamma_approx <- sum(1 / seq(1, n.tilt)) - log(n.tilt)
 n = 200
 unif.distrib <- runif(n, min = 0, max = 1) #échantillon d'une distribution uniforme entre 0 et 1
 gumb.distrib.betha.mu <- seq(1, n)
-betha <- 1
-mu <- 0
+betha <- 3
+mu <- 2
 
 for (i in 1:n){
   gumb.distrib.betha.mu[i] <- -betha * log(-log(unif.distrib[i], base = exp(1)), base = exp(1)) + mu
@@ -157,9 +157,9 @@ betha.MV <- seq(1:m)
 mu.MV <- seq(1:m)
 
 for (l in 1:m) {
-  data.use <- gumb.distrib(200, 1, 0)
-  betha.M[l] <- moment.method.function(1, 0, data.use)[1]
-  mu.M[l] <- moment.method.function(3, 2, data.use)[2]
+  data.use <- gumb.distrib(200, betha, mu)
+  betha.M[l] <- moment.method.function(betha, mu, data.use)[1]
+  mu.M[l] <- moment.method.function(betha, mu, data.use)[2]
   opt.result <- optim(par = initial.params, fn = neg.log.likelihood, data = data.use)
   opt.params <- opt.result$par
   betha.MV[l] <- opt.params[1]
@@ -169,12 +169,15 @@ for (l in 1:m) {
 theta.M <- c(betha.M, mu.M)
 theta.MV <- c(betha.MV, mu.MV)
 theta.M <- matrix(nrow = 2, ncol = 100)
+theta.MV <- matrix(nrow = 2, ncol = 100)
 theta.M[1, ] <- betha.M
 theta.M[2, ] <- mu.M
+theta.MV[1, ] <- betha.MV
+theta.MV[2, ] <- mu.MV 
+
+
 
 moment.method.function(1, 0, data.use)
-
-
 
 
 #Créons les histogrammes et boxplot
@@ -202,3 +205,35 @@ png("hist_mu_hat.png")
 hist(theta.M[2,], main = "Histogramme de mu_hat", xlab = "mu_hat", ylab = "Fréquence")
 dev.off()
 
+
+#3) Bias, variance and MSE
+
+#Calculons le biais par la formule B(theta.hat) = E(theta.hat) - theta
+
+#Calculons quelques valeurs nécessaire pour la suite 
+esp.bheta.hat.M <- sum(betha.M)/m
+esp.mu.hat.M <- sum(mu.M)/m
+esp.bheta.hat.MV <- sum(betha.MV)/m
+esp.mu.hat.MV <- sum(mu.MV)/m
+
+esp.betha.hat.squared.M <- sum(betha.M^2)/m
+esp.mu.hat.squared.M <- sum(mu.M^2)/m
+esp.betha.hat.squared.MV <- sum(betha.MV^2)/m
+esp.mu.hat.squared.MV <- sum(mu.MV^2)/m
+
+
+
+bias.M <- c(esp.bheta.hat.M - betha, esp.mu.hat.M- mu)
+bias.MV <- c(esp.bheta.hat.MV - betha, esp.mu.hat.MV - mu)
+
+var.M <- c(esp.betha.hat.squared.M - (esp.bheta.hat.M)^2, esp.mu.hat.squared.M - (esp.mu.hat.M)^2)
+var.MV <- c(esp.betha.hat.squared.MV - (esp.bheta.hat.MV)^2, esp.mu.hat.squared.MV - (esp.mu.hat.MV)^2)
+
+MSE.M <- (bias.M)^2 + var.M
+MSE.MV <- (bias.MV)^2 + var.MV
+
+#IL FAUT VERIFIER QUE LES CALCULS SONT CORRECTS ET COHERENTS ET PUIS FAIRE DES CONCLUSIONS DESSUS
+#Les valeurs concernant mu ne devraient pas être plus basse dans la stratégie MV que la stratégie M ?
+#Est-ce qu'on fait des graphes ?
+
+#4) 
