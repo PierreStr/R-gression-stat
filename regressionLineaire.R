@@ -1,6 +1,8 @@
 #Partie 2: Régression ----
 
+
 #(a)----------------------
+
 
 #Importation des données "data_project2024"
 dataproject <- read.csv("data_project2024.txt", sep=",")
@@ -45,8 +47,8 @@ plot(x = Xi, y = Yi,
 abline(a = beta_0_chapeau, b = beta_1_chapeau, lty = 1, col = "red", lwd = 2)
 
 
-
 #(b)----------------------
+
 
 #On réitère les opérations avec W
 Wi <- dataproject$W
@@ -94,7 +96,6 @@ abs.T.obs <- abs(T.obs)
 #On peut maintenant calculer la probabilité que T.0 soit supérieure à T.obs
 p.value <- 2 * pt(abs.T.obs, df = 248, lower.tail = FALSE ) 
 p.value
-
 
 
 #(d)------------------------
