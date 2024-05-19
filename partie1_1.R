@@ -7,23 +7,33 @@ Yi <- dataproject$Y
 
 # Fonction de vraissemblance 
 
-likelyhood<-function(param, Yi){
-  n<-length(Yi)
+likelyhood<-function(param){
+  
   result<-1
-  beta<-param[1]
-  mu<-param[2]
+  beta <- param[1]
+  mu <- param[2]
+  dataproject <- read.csv("data_project2024.txt", sep=",")
+  
+  Yi <- dataproject$Y
+  n<-length(Yi)
+
+  
   for (i in 1:n) {
-    result<-(1/beta)*result*exp(((mu -Yi[i])/beta)-exp((mu -Yi[i])/beta))
+    tmp<-(mu -Yi[i])/beta
+    result<-(1/beta)*result*exp(tmp-exp(tmp))
+    print(result)
   }
+  
   return (-result)}
 
 
-param<- c(1,2)  
-x<-likelyhood(param,Yi)  
-print(x)
+param<-c(1,0) 
+x<-likelyhood(param)  
+cprint(x)
 
-opt.result <- optim(par = param, fn = likelyhood, Yi = Yi,method = "BFGS")
-opt.params <- opt.result$par
+result <- optim(par = param, fn = likelyhood,method = "BFGS")
+opt <- result$par
+print(opt)
 opt.params
 print(opt.result$par)
 
