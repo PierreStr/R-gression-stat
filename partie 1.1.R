@@ -4,17 +4,15 @@
 dataproject <- read.csv("data_project2024.txt", sep=",")
 
 Yi <- dataproject$Y
+Y.barre <- mean(Yi)
 
-# Fonction de vraissemblance 
+# Implémentation de l'opposé de la fonction du log de vraissemblance 
 
-log_likelihood<-function(param){
+neg_log_likelihood<-function(param){
 
   beta <- param[1]
   
-  if (beta <= 0) {
-    print("m'enfin")
-    return(0)
-  }
+  if(beta <= 0){return (NaN)}  # vérifier que beta n'est pas négatif
   
   mu <- param[2]
   n<-length(Yi)
@@ -23,25 +21,33 @@ log_likelihood<-function(param){
   
   for (i in 1:n) {
     tmp<- (mu - Yi[i])/beta
-    resultat <- resultat + exp(tmp-exp(tmp))
+    resultat <- resultat + tmp-exp(tmp)
   }
   
   return (-resultat)}
 
+# Optimisation de la fonction définie plus haut
+param<-c(3,5)  
 
-param<-c(0.00000001,6000000000)
-
-x<-log_likelihood(param)  
-x
-
-lower_bounds <- c(0.00000002, -Inf)
-
-result <- optim(par = param, fn = log_likelihood, method = "L-BFGS-B", lower = lower_bounds)
+result <- optim(par = param, fn = neg_log_likelihood, method = "BFGS")
 opt <- result$par
 opt
-result
+
+# Vérification des estimateurs avec les équations données
+# Pour mu
+verif.mu<-function(beta.hat, mu.hat){
+  
+  result <- -beta.hat*log((1/length(Yi))*sum(exp(-(Yi/beta.hat)))) - mu.hat
+  return(result)}
+
+#Pour beta
+verif.beta<-function(beta.hat, mu.hat){
+  
+  result <- Y.barre - (sum(Yi*exp(-(Yi/beta.hat))))/(sum(exp(-(Yi/beta.hat)))) - beta.hat
+  return(result)}
 
 
-
-
-
+verifmu <- verif.mu(0.3610547, 2.8413821)
+verifbeta <- verif.beta(0.3610547, 2.8413821)
+verifmu
+verifbeta
