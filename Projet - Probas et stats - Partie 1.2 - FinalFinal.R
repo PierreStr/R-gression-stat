@@ -1,6 +1,6 @@
 #Code de la partie 1.2 du projet du cours "Probabilités et analyse statistique"
 
-#Commençons par implémenter des éléments et fonctions utile pour la suite 
+#Commençons par implémenter des éléments et fonctions utiles pour la suite 
 
 
 # Approximation de la constante d'Euler-Mascheroni par une somme de série
@@ -11,8 +11,7 @@ gamma_approx <- sum(1 / seq(1, n.tilt)) - log(n.tilt)
 library(ggplot2)
 
 #Implémentons une seed
-set.seed('313')
-
+set.seed("311")
 #a)
 
 #Utilisons la méthode proposée dans l'énoncé afin de générer un échantillon de valeurs issues d'une loi de Gumbel
@@ -40,7 +39,7 @@ rv.generator <- function(n, beta, mu) {
 }
 
 
-#En utilisant cet échantillon, nous allons calculer l'estimateur des moements et l'estimateur du maximum de vraisemblance de 
+#En utilisant cet échantillon, nous allons calculer l'estimateur des moments et l'estimateur du maximum de vraisemblance de 
 #notre distribution
 
 first.moment.hat <- sum(gumb.distrib.beta.mu)/ (n)
@@ -61,17 +60,11 @@ moment.est <- function(beta, mu, data) {
   return(c(beta.hat, mu.hat))
 }
 
-moment.est(3, 2, data = rv.generator(200, 3, 2))
+moment.est(3, 2, gumb.distrib.beta.mu)
+
+
 #Appliquons maintenant la méthode du maximum de vraisemblance 
 
-log.likelihood.est <- function(theta, data) {
-  n <- length(data)
-  var.inter <- numeric(n)
-  for (k in 1:n) {
-    var.inter[k] <- -log(beta) - (data[k] - mu) / beta - exp(-(data[k] - mu) / beta)
-  }
-  return(sum(var.inter))
-}
 
 log.likelihood.est <- function(beta, mu, data) {
   n <- length(data)
@@ -87,7 +80,6 @@ neg.log.likelihood.est <- function(params, data) {
   mu <- params[2]
   return(-log.likelihood.est(beta, mu, data))
 }
-
 
 #Utilisons la fonction optim pour obtenir les paramètres idéaux
 beta.initial <- 1  
@@ -118,8 +110,8 @@ for (l in 1:m) {
   mu.MV[l] <- opt.params[2]
 }
 
-#Deux manière de stocker les données
 
+#Stockons les données 
 theta.M <- matrix(nrow = 2, ncol = 100)
 theta.MV <- matrix(nrow = 2, ncol = 100)
 theta.M[1, ] <- beta.M
@@ -129,41 +121,41 @@ theta.MV[2, ] <- mu.MV
 
 #Créons maintenant les histogrammes et boxplot
 png("boxplot_beta_hat_M.png")
-boxplot(beta.M, main = "Boxplot des estimateurs par la méthode des moments pour beta", xlab = "Paramètres", ylab = "Estimateurs")
+boxplot(beta.M, main = "Boxplot des estimateurs \n par la méthode des moments pour beta", xlab = "Paramètres", ylab = "Estimateurs")
 dev.off()
 
 png("boxplot_mu_hat_M.png")
-boxplot(mu.M, main = "Boxplot des estimateurs par la méthode des moments pour mu", xlab = "Paramètres", ylab = "Estimateurs")
+boxplot(mu.M, main = "Boxplot des estimateurs \n par la méthode des moments pour mu", xlab = "Paramètres", ylab = "Estimateurs")
 dev.off()
 
 png("boxplot_beta_hat_MV.png")
-boxplot(beta.MV, main = "Boxplot des estimateurs par la méthode du MV pour beta", xlab = "Paramètres", ylab = "Estimateurs")
+boxplot(beta.MV, main = "Boxplot des estimateurs \n par la méthode du MV pour beta", xlab = "Paramètres", ylab = "Estimateurs")
 dev.off()
 
 png("boxplot_mu_hat_MV.png")
-boxplot(mu.MV, main = "Boxplot des estimateurs par la méthode du MV pour mu", xlab = "Paramètres", ylab = "Estimateurs")
+boxplot(mu.MV, main = "Boxplot des estimateurs \n par la méthode du MV pour mu", xlab = "Paramètres", ylab = "Estimateurs")
 dev.off()
 
 png("hist_beta_hat_M.png")
-hist(theta.M[1,], main = "Histogramme de β_hat", xlab = 'valeurs de β_hat', ylab = "Fréquence")
+hist(theta.M[1,], main = "Histogramme des estimateurs \n par la méthode des moments pour beta", xlab = 'valeurs de β_hat', ylab = "Fréquence")
 dev.off()
 
 png("hist_mu_hat_M.png")
-hist(theta.M[2,], main = "Histogramme de μ_hat", xlab = "valeurs de μ_hat", ylab = "Fréquence")
+hist(theta.M[2,], main = "Histogramme des estimateurs \n par la méthode des moments pour mu", xlab = "valeurs de μ_hat", ylab = "Fréquence")
 dev.off()
 
 png("hist_beta_hat_MV.png")
-hist(theta.MV[1,], main = "Histogramme de β_hat", xlab = "valeurs de β_hat", ylab = "Fréquence")
+hist(theta.MV[1,], main = "Histogramme des estimateurs \n par la méthode du MV pour beta", xlab = "valeurs de β_hat", ylab = "Fréquence")
 dev.off()
 
 png("hist_mu_hat_MV.png")
-hist(theta.MV[2,], main = "Histogramme de μ_hat", xlab = "valeurs de μ_hat", ylab = "Fréquence")
+hist(theta.MV[2,], main = "Histogramme des estimateurs \n par la méthode du MV pour mu", xlab = "valeurs de μ_hat", ylab = "Fréquence")
 dev.off()
 
 
 #c) Calculons le biais, la variance et le MSE 
 
-#Calculons quelques valeurs nécessaire pour la suite 
+#Calculons quelques valeurs nécessaires pour la suite 
 esp.beta.hat.M <- sum(beta.M)/m
 esp.mu.hat.M <- sum(mu.M)/m
 esp.beta.hat.MV <- sum(beta.MV)/m
@@ -183,16 +175,18 @@ var.MV <- c(esp.beta.hat.squared.MV - (esp.beta.hat.MV)^2, esp.mu.hat.squared.MV
 MSE.M <- (bias.M)^2 + var.M
 MSE.MV <- (bias.MV)^2 + var.MV
 
+bias.M; var.M; MSE.M
+bias.MV; var.MV; MSE.MV
+
 #d)
 
 #Créons une formule générale pour les calculs effectués en c) afin de faciliter les choses
-
 
 theta.M.est <- function(n, m, beta, mu) {
   beta.M <- vector("numeric", length = m)
   mu.M <- vector("numeric", length = m)
   for (l in 1:m) {
-    data.use <- rv.generator(n, beta, mu)
+    data.use <- rv.generator(n, beta.choosen, mu.choosen)
     beta.M[l] <- moment.est(beta, mu, data.use)[1]
     mu.M[l] <- moment.est(beta, mu, data.use)[2]
   }
@@ -206,7 +200,7 @@ theta.MV.est <- function(n, m, beta, mu) {
   mu.MV <- vector("numeric", length = m)
   initial.params <- c(beta, mu)
   for (l in 1:m) {
-    data.use <- rv.generator(n, beta, mu)
+    data.use <- rv.generator(n, beta.choosen, mu.choosen)
     opt.result <- optim(par = initial.params, fn = neg.log.likelihood.est, data = data.use, method = "BFGS")
     opt.params <- opt.result$par
     beta.MV[l] <- opt.params[1]
@@ -216,7 +210,6 @@ theta.MV.est <- function(n, m, beta, mu) {
   theta.MV[2, ] <- mu.MV
   return(theta.MV)
 }
-
 
 bias.var.MSE <- function(n, m, beta, mu) {
   esp.beta.hat.M.temp <- sum(theta.M.est(n, m, beta, mu)[1, ])/m
@@ -247,20 +240,20 @@ bias.var.MSE <- function(n, m, beta, mu) {
 
 n.values <- c(250, 500, 750, 1000, 1250)
 
-bias.n.M.beta <- vector("numeric", length = 5)
-bias.n.MV.beta <- vector("numeric", length = 5)
-var.n.M.beta <- vector("numeric", length = 5)
-var.n.MV.beta <- vector("numeric", length = 5)
-MSE.n.M.beta <- vector("numeric", length = 5)
-MSE.n.MV.beta <- vector("numeric", length = 5)
-bias.n.M.mu <- vector("numeric", length = 5)
-bias.n.MV.mu <- vector("numeric", length = 5)
-var.n.M.mu <- vector("numeric", length = 5)
-var.n.MV.mu <- vector("numeric", length = 5)
-MSE.n.M.mu <- vector("numeric", length = 5)
-MSE.n.MV.mu <- vector("numeric", length = 5)
+bias.n.M.beta <- vector("numeric", length = length(n.values))
+bias.n.MV.beta <- vector("numeric", length = length(n.values))
+var.n.M.beta <- vector("numeric", length = length(n.values))
+var.n.MV.beta <- vector("numeric", length = length(n.values))
+MSE.n.M.beta <- vector("numeric", length = length(n.values))
+MSE.n.MV.beta <- vector("numeric", length = length(n.values))
+bias.n.M.mu <- vector("numeric", length = length(n.values))
+bias.n.MV.mu <- vector("numeric", length = length(n.values))
+var.n.M.mu <- vector("numeric", length = length(n.values))
+var.n.MV.mu <- vector("numeric", length = length(n.values))
+MSE.n.M.mu <- vector("numeric", length = length(n.values))
+MSE.n.MV.mu <- vector("numeric", length = length(n.values))
 
-for (i in 1:5) {
+for (i in 1:length(n.values)) {
   var.int <- bias.var.MSE(n.values[i], 100, 3, 2) #Matrice 2 lignes 6 colonnes 
   bias.n.M.beta[i] <- var.int[1, 1]
   var.n.M.beta[i] <- var.int[1, 3]
@@ -318,9 +311,9 @@ ggplot(results_df.beta, aes(x = n, y = MSE, color = estimateur, linetype = estim
 results_df.mu <- data.frame(
   n = rep(n.values, each = 2),  # Répéter chaque valeur de n deux fois (une fois pour chaque estimateur)
   estimateur = rep(c("M", "MV"), length(n.values)),  # Indiquer l'estimateur
-  biais = c(bias.n.M.mu, bias.n.MV.mu),  # Les valeurs des biais pour chaque taille d'échantillon et chaque estimateur
-  variance = c(var.n.M.mu, var.n.MV.mu),  # Les valeurs des variances pour chaque taille d'échantillon et chaque estimateur
-  MSE = c(MSE.n.M.mu, MSE.n.MV.mu)  # Les valeurs des MSE pour chaque taille d'échantillon et chaque estimateur
+  biais = abs(c(bias.n.M.mu, bias.n.MV.mu)),  # Les valeurs des biais pour chaque taille d'échantillon et chaque estimateur
+  variance = abs(c(var.n.M.mu, var.n.MV.mu)),  # Les valeurs des variances pour chaque taille d'échantillon et chaque estimateur
+  MSE = abs(c(MSE.n.M.mu, MSE.n.MV.mu))  # Les valeurs des MSE pour chaque taille d'échantillon et chaque estimateur
 )
 
 # Tracer les graphiques
@@ -348,7 +341,6 @@ ggplot(results_df.mu, aes(x = n, y = MSE, color = estimateur, linetype = estimat
        y = "MSE") +
   theme_minimal()
 
-
 #e)
-bias.var.MSE(200, 100, 3, 2)
-bias.var.MSE(1000, 100, 3, 2)
+
+
