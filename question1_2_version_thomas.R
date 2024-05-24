@@ -18,7 +18,8 @@ log_vraissemblance <- function(params, L) {
   beta <- params[1]
   mu <- params[2]
   n <- length(L)
-  result <- sum(log(1/beta) + (mu - L)/beta - exp((mu - L)/beta))
+  result <- sum( (mu - L)/beta - exp((mu - L)/beta))
+  result<-result-n*log(beta)
   return(-result)
 }
 
@@ -119,11 +120,11 @@ for (i in 1:M) {
   MSEmu_1000[i] <- (res_1000$par[2] - 2)^2
   MSEmu_1250[i] <- (res_1250$par[2] - 2)^2
   
-  B_250[i] <- (res_250$par[1] - 3)^2
-  B_500[i] <- (res_500$par[1] - 3)^2
-  B_750[i] <- (res_750$par[1] - 3)^2
-  B_1000[i] <- (res_1000$par[1] - 3)^2
-  B_1250[i] <- (res_1250$par[1] - 3)^2
+  B_250[i] <- abs(res_250$par[1] - 3)
+  B_500[i] <- abs(res_500$par[1] - 3)
+  B_750[i] <- abs(res_750$par[1] - 3)
+  B_1000[i] <- abs(res_1000$par[1] - 3)
+  B_1250[i] <- abs(res_1250$par[1] - 3)
   
   Bmu_250[i] <- (res_250$par[2] - 2)^2
   Bmu_500[i] <- (res_500$par[2] - 2)^2
@@ -162,3 +163,11 @@ plot(abcis, B_tot, type="b", col="red", xlab="Taille de l'échantillon", ylab="B
 
 # Tracé de la variance 
 plot(abcis, V_tot, type="b", col="red", xlab="Taille de l'échantillon", ylab="Variance", main="Variance en fonction de la taille de l'échantillon")
+
+# On plot le biais de beta carré + la variance de beta 
+B_V_tot <-c(mean(abs(beta_hat_250^2 -9)),mean(abs(beta_hat_500^2 -9)),mean(abs(beta_hat_750^2 -9)),mean(abs(beta_hat_1000^2 -9)),mean(abs(beta_hat_1250^2 -9)))
+
+
+plot(abcis, B_V_tot, type="b", col="blue", xlab="Taille de l'échantillon", ylab="MSE", main="biais de beta carré + variance de beta")
+
+
