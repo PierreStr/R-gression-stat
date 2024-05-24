@@ -165,8 +165,7 @@ plot(abcis, B_tot, type="b", col="red", xlab="Taille de l'échantillon", ylab="B
 plot(abcis, V_tot, type="b", col="red", xlab="Taille de l'échantillon", ylab="Variance", main="Variance en fonction de la taille de l'échantillon")
 
 # On plot le biais de beta carré + la variance de beta 
-B_V_tot <-c(mean(abs(beta_hat_250^2 -9)),mean(abs(beta_hat_500^2 -9)),mean(abs(beta_hat_750^2 -9)),mean(abs(beta_hat_1000^2 -9)),mean(abs(beta_hat_1250^2 -9)))
-
+B_V_tot <-c(B_tot[1]^2 + V_tot[1],B_tot[2]^2 + V_tot[2],B_tot[3]^2 + V_tot[3],B_tot[4]^2 + V_tot[4],B_tot[5]^2 + V_tot[5])
 
 plot(abcis, B_V_tot, type="b", col="blue", xlab="Taille de l'échantillon", ylab="MSE", main="biais de beta carré + variance de beta")
 
