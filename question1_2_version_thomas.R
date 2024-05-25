@@ -6,7 +6,7 @@ library(pracma)
 n.tilt <- 1000000
 gamma_approx <- sum(1 / seq(1, n.tilt)) - log(n.tilt)
 
-
+set.seed("311")
 # Fonction pour initialiser les listes avec des valeurs aléatoires de distribution Gumbel
 initialisation <- function(n) {
   unif.distrib <- runif(n, min = 0, max = 1)
@@ -197,12 +197,14 @@ abcis <- c(250, 500, 750, 1000, 1250)
            
 MSE_tot <- c(mean(MSE_250), mean(MSE_500), mean(MSE_750), mean(MSE_1000), mean(MSE_1250))
 B_tot <- c(mean(B_250), mean(B_500), mean(B_750), mean(B_1000), mean(B_1250))
+B_tot <-abs(B_tot)
 V_tot<-c(var(beta_hat_250),var(beta_hat_500),var(beta_hat_750),var(beta_hat_1000),var(beta_hat_1250))
 
 #MSE,biais et variance moyenne pour mu likly
 
 MSE_tot_mu <- c(mean(MSEmu_250), mean(MSEmu_500), mean(MSEmu_750), mean(MSEmu_1000), mean(MSEmu_1250))
 B_tot_mu <- c(mean(Bmu_250), mean(Bmu_500), mean(Bmu_750), mean(Bmu_1000), mean(Bmu_1250))
+B_tot_mu <- abs(B_tot_mu)
 V_tot_mu<-c(var(mu_hat_250),var(mu_hat_500),var(mu_hat_750),var(mu_hat_1000),var(mu_hat_1250))
 
 
@@ -211,6 +213,8 @@ V_tot_mu<-c(var(mu_hat_250),var(mu_hat_500),var(mu_hat_750),var(mu_hat_1000),var
 
 B_tot_mom_mu <-c(mean(mu_mom_250 -2 ),mean(mu_mom_500 -2 ),mean(mu_mom_750 -2 ),mean(mu_mom_1000 -2 ),mean(mu_mom_1250 -2 ))
 B_tot_mom_beta <-c(mean(beta_mom_250 -3 ),mean(beta_mom_500 -3 ),mean(beta_mom_750 -3 ),mean(beta_mom_1000 -3 ),mean(beta_mom_1250 -3 ))
+B_tot_mom_beta<-abs(B_tot_mom_beta)
+B_tot_mom_mu<-abs(B_tot_mom_mu)
 
 
 # on calcul la MSE des estimateurs de moment
