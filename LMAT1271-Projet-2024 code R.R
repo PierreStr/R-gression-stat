@@ -176,13 +176,13 @@ boxplot(beta.MV, main = "Boxplot des estimateurs \n par la méthode du MV pour b
 
 boxplot(mu.MV, main = "Boxplot des estimateurs \n par la méthode du MV pour mu", xlab = "Paramètres", ylab = "Estimateurs")
 
-hist(theta.M[1,], main = "Histogramme des estimateurs \n par la méthode des moments pour beta", xlab = 'valeurs de β_hat', ylab = "Fréquence")
+hist(theta.M[1,], main = "Histogramme des estimateurs \n par la méthode des moments pour beta", xlab = "valeurs de l'estimateur de beta", ylab = "Fréquence")
 
-hist(theta.M[2,], main = "Histogramme des estimateurs \n par la méthode des moments pour mu", xlab = "valeurs de μ_hat", ylab = "Fréquence")
+hist(theta.M[2,], main = "Histogramme des estimateurs \n par la méthode des moments pour mu", xlab = "valeurs de l'estimateur de mu", ylab = "Fréquence")
 
-hist(theta.MV[1,], main = "Histogramme des estimateurs \n par la méthode du MV pour beta", xlab = "valeurs de β_hat", ylab = "Fréquence")
+hist(theta.MV[1,], main = "Histogramme des estimateurs \n par la méthode du MV pour beta", xlab = "valeurs de l'estimateur de beta", ylab = "Fréquence")
 
-hist(theta.MV[2,], main = "Histogramme des estimateurs \n par la méthode du MV pour mu", xlab = "valeurs de μ_hat", ylab = "Fréquence")
+hist(theta.MV[2,], main = "Histogramme des estimateurs \n par la méthode du MV pour mu", xlab = "valeurs de l'estimateur de mu", ylab = "Fréquence")
 
 
 # c) ---------------------------------------------------------------
